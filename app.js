@@ -9,7 +9,7 @@ const app = express()
 app.use(express.json( { extended: false } ))
 
 db.sequelize.sync({
-    //   force: true
+      force: true
   }).then(() => {
       app.listen(PORT, () => {
           console.log("App listening on PORT " + PORT);
