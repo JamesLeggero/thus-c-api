@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const thus = require('../../thus')
 const  { User, Stock } = require('../models/')
+// const models = require('../models/models')
 
 router.get('/', async (req, res) => {
     const stocks = await Stock.findAll({

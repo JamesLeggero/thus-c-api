@@ -13,7 +13,9 @@ app.use('/api/users', require('./server/controllers/users'))
 app.use('/api/stocks', require('./server/controllers/stocks'))
 
 db.sequelize.sync({
-      force: false
+    // logging: false,
+    force: false,
+    logging: false
   }).then(() => {
       app.listen(PORT, () => {
           console.log("App listening on PORT " + PORT);
