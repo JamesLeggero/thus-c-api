@@ -1,13 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const  { User, Stock } = require('../models/')
-// const models = require('../models/models')
 
 router.get('/', async (req, res) => {
-    const users = await User.findAll({
-        // include: [{ model: Stock }]
-    })
-    res.json(users)
+    try {
+        
+        const users = await User.findAll({
+            include: [{ model: Stock }]
+        })
+        res.json(users)
+    } catch (error) {
+        res.json({error: error.message})
+    }
 })
 
 router.get('/:id', async (req, res) => {

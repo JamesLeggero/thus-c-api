@@ -1,33 +1,56 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class Draw extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-      Draw.associate = models => {
-        Draw.belongsTo(models.User)
-      }
-    }
-  };
-  Draw.init({
-    firstRank: DataTypes.INTEGER,
-    firstRankReversed: DataTypes.BOOLEAN,
-    secondRank: DataTypes.INTEGER,
-    secondRankReversed: DataTypes.BOOLEAN,
-    thirdRank: DataTypes.INTEGER,
-    thirdRankReversed: DataTypes.BOOLEAN,
-    pickedStock: DataTypes.STRING,
-    pickedStockReversed: DataTypes.BOOLEAN
-  }, {
-    sequelize,
-    modelName: 'Draw',
-  });
-  return Draw;
-};
+  const Draw = sequelize.define('draw', {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      required: true
+    },
+    firstRank: {
+      type: DataTypes.INTEGER,
+      required: true
+    },
+    firstRankReversed: {
+      type: DataTypes.BOOLEAN,
+      required: true
+    },
+    secondRank: {
+      type: DataTypes.INTEGER,
+      required: true
+    },
+    secondRankReversed: {
+      type: DataTypes.BOOLEAN,
+      required: true
+    },
+    thirdRank: {
+      type: DataTypes.INTEGER,
+      required: true
+    },
+    thirdRankReversed: {
+      type: DataTypes.BOOLEAN,
+      required: true
+    },
+    pickedStock: {
+      type: DataTypes.STRING,
+      required: true
+    },
+    pickedStockReversed: {
+      type: DataTypes.BOOLEAN,
+      required: true
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    updated_at: DataTypes.DATE
+  })
+  return Draw
+}
+
+

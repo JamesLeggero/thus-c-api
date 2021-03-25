@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config()
+
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -8,12 +10,17 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+const { PG_URI } = process.env
+const sequelize = new Sequelize(PG_URI)
+
+// let sequelize;
+// if (config.use_env_variable) {
+//   sequelize = new Sequelize(process.env[config.use_env_variable], config);
+// } else {
+//   sequelize = new Sequelize(config.database, config.username, config.password, config);
+// }
+
+
 
 fs
   .readdirSync(__dirname)
@@ -35,3 +42,27 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
+
+// 'use strict';
+// require('dotenv').config()
+
+// const { PG_URI } = process.env
+
+// const Sequelize = require('sequelize')
+// const sequelize = new Sequelize(PG_URI)
+
+// const db = {}
+
+// db.Sequelize = Sequelize
+// db.sequelize = sequelize
+
+// db.user = require('./user')
+// db.stock = require('./stock')
+// db.draw = require('./draw')
+
+// db.user.belongsToMany(db.stock, {through: 'UserStocks'})
+// db.user.hasMany(db.draw)
+// db.stock.belongsToMany(db.user, {through: 'UserStocks'})
+// db.draw.belongsTo(db.user)
+
+// module.exports = db

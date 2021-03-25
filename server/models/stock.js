@@ -13,10 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Stock.associate = models => {
         Stock.belongsToMany(models.User, {
-          through: 'UserStocks',
-          as: 'users',
-          foreignKey: 'stockId',
-          })
+          // through: 'UserStocks', 
+        // foreignKey: 'userId'
+      })
       }
 
     }
