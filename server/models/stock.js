@@ -36,8 +36,12 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     symbol: DataTypes.STRING,
   }, {});
-  // User.associate = function(models) {
-  //   User.belongsToMany(models.Stock, {through: 'UserStocks',foreignKey: 'userId', as: 'stocks'})
-  // };
+  Stock.associate = function(models) {
+    Stock.belongsToMany(models.User, {
+      through: 'UserStocks',
+      as: 'users',
+      foreignKey: 'stockId'
+    })
+  };
   return Stock;
 };

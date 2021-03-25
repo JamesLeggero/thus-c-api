@@ -40,8 +40,12 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
   }, {});
   User.associate = function(models) {
-    // User.belongsToMany(models.Stock, {through: 'UserStocks',foreignKey: 'userId', as: 'stocks'})
-    // User.hasMany(models.Draw, {as: 'draws', foreignKey: 'id'})
+    User.belongsToMany(models.Stock, {
+      through: 'UserStocks',
+      as: 'stocks',
+      foreignKey: 'userId'
+    })
+    User.hasMany(models.Draw, {as: 'draws', foreignKey: 'userId'})
   };
   return User;
 };
