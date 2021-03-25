@@ -3,9 +3,9 @@
 module.exports = (sequelize, DataTypes) => {
   const Draw = sequelize.define('draw', {
     id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: DataTypes.INTEGER,
       allowNull: false
     },
     userId: {

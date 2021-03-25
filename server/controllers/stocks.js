@@ -16,13 +16,18 @@ router.post('/', async (req, res) => {
         const stocks = await thus.makeLocalStockList()
         if (!stocks.includes(symbol)) {
 
-            const name = await thus.retrieveStockName(symbol) 
-            const stock = await Stock.create({
-                symbol: symbol,
-                name: name
-            })
-            const newStockList = await thus.makeLocalStockList()
-            res.json(newStockList)
+            const name = await thus.retrieveStockName(symbol)
+            if (!name) {
+                res.json('Stock does not exist')
+            } else {
+
+                const stock = await Stock.create({
+                    symbol: symbol,
+                    name: name
+                })
+                const newStockList = await thus.makeLocalStockList()
+                res.json(newStockList)
+            }
         } else {
 
             res.json('Stock exists in list: ' + stocks)
