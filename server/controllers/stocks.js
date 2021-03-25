@@ -6,6 +6,9 @@ const  { User, Stock } = require('../models/')
 
 router.get('/', async (req, res) => {
     const stocks = await Stock.findAll({
+        include: [
+            { model: User, as: 'users'}
+        ]
     })
     res.json(stocks)
 })
