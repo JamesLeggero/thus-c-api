@@ -33,13 +33,15 @@
 // };
 
 'use strict';
+// const Draw = require('./draw')
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     email: DataTypes.STRING,
     password: DataTypes.STRING,
   }, {});
-  // User.associate = function(models) {
-  //   User.belongsToMany(models.Stock, {through: 'UserStocks',foreignKey: 'userId', as: 'stocks'})
-  // };
+  User.associate = function(models) {
+    // User.belongsToMany(models.Stock, {through: 'UserStocks',foreignKey: 'userId', as: 'stocks'})
+    // User.hasMany(models.Draw, {as: 'draws', foreignKey: 'id'})
+  };
   return User;
 };
