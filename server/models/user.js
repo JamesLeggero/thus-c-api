@@ -45,7 +45,9 @@ module.exports = (sequelize, DataTypes) => {
       as: 'stocks',
       foreignKey: 'userId'
     })
-    User.hasMany(models.Draw, {as: 'draws', foreignKey: 'userId'})
+    User.hasMany(models.Draw, {as: 'draws', 
+    foreignKey: 'userId'
+  })
   };
   return User;
 };

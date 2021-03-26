@@ -7,8 +7,19 @@ router.get('/', async (req, res) => {
         
         const users = await User.findAll({
             include: [
-                { model: Draw , as: 'draws'},
-                {model: Stock, as: 'stocks'}
+                { 
+                    model: Draw, 
+                    as: 'draws',
+                    attributes: ['createdAt', 'pickedStock']
+                },
+                {
+                    model: Stock, 
+                    as: 'stocks',
+                    attributes: ['symbol', 'name'],
+                    through: {
+                        attributes: []
+                    }
+                }
             ]
         })
         res.json(users)
