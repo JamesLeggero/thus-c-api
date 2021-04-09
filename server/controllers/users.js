@@ -66,6 +66,25 @@ router.post('/', async (req, res) => {
 
 router.post('/:id', async (req, res) => {
     try {
+        if (req.body.action === 'createDraw') {
+            try {
+                res.json('createDraw for id ' + req.params.id)
+            } catch(error) {
+                res.json({error: error.message})
+            }
+        } else if (req.body.action === 'createStock') {
+            try {
+                res.json('createStock for id ' + req.params.id)
+            } catch (error) {
+                res.json({error: error.message})
+            }
+        } else {
+            res.json('action not recognized')
+        }
+    } catch (error) {
+        res.json({error: error.message})
+    }
+    // try {
         //BIG NOTE YOU MIGHT BE MOVING THIS TO DRAWS and /draws/:id
         //or maybe users/:id/draws
         // get personal user stock list
@@ -94,9 +113,9 @@ router.post('/:id', async (req, res) => {
         //     stockId: req.body.stockId
         // })
         // res.json(userStock)
-    } catch (error) {
-        res.json({error: error.message})
-    }
+    // } catch (error) {
+    //     res.json({error: error.message})
+    // }
 })
 
 
