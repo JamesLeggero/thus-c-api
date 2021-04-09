@@ -20,33 +20,52 @@ router.get('/', async (req, res) => {
     res.json(stocks)
 })
 
-router.post('/', async (req, res) => {
-    try {
-        const {symbol} = req.body
-        const stocks = await thus.makeLocalStockList()
-        if (!stocks.includes(symbol)) {
-
-            const name = await thus.retrieveStockName(symbol)
-            if (!name) {
-                res.json('Stock does not exist')
-            } else {
-
-                const stock = await Stock.create({
-                    symbol: symbol,
-                    name: name
-                })
-                const newStockList = await thus.makeLocalStockList()
-                res.json(newStockList)
-            }
-        } else {
-
-            res.json('Stock exists in list: ' + stocks)
-        }
-
-    } catch (error) {
-        res.json({error: error.message})
-    }
+router.get('/:id', async (req, res) => {
+    const stock = await Stock.findByPk(req.params.id, 
+        {
+            include: [
+                {
+                    model: User, 
+                    as: 'users',
+                    attributes: ['id', 'email'],
+                    through: {
+                        attributes: []
+                    }
+                }
+            ]
+        })
+    res.json(stock)
 })
+
+
+
+// router.post('/', async (req, res) => {
+//     try {
+//         const {symbol} = req.body
+//         const stocks = await thus.makeLocalStockList()
+//         if (!stocks.includes(symbol)) {
+
+//             const name = await thus.retrieveStockName(symbol)
+//             if (!name) {
+//                 res.json('Stock does not exist')
+//             } else {
+
+//                 const stock = await Stock.create({
+//                     symbol: symbol,
+//                     name: name
+//                 })
+//                 const newStockList = await thus.makeLocalStockList()
+//                 res.json(newStockList)
+//             }
+//         } else {
+
+//             res.json('Stock exists in list: ' + stocks)
+//         }
+
+//     } catch (error) {
+//         res.json({error: error.message})
+//     }
+// })
 
 
 

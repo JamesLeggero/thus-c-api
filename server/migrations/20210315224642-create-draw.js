@@ -8,6 +8,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Users",
+          key: "id"
+        }
+      },
       firstRank: {
         type: Sequelize.INTEGER
       },
@@ -27,7 +34,11 @@ module.exports = {
         type: Sequelize.BOOLEAN
       },
       pickedStock: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Stocks",
+          id: "id"
+        }
       },
       pickedStockReversed: {
         type: Sequelize.BOOLEAN

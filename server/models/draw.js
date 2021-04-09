@@ -58,6 +58,9 @@
 // }
 
 'use strict';
+
+// const { Sequelize } = require("sequelize/types");
+
 // const Draw = require('./draw')
 module.exports = (sequelize, DataTypes) => {
   const Draw = sequelize.define('Draw', {
@@ -68,9 +71,19 @@ module.exports = (sequelize, DataTypes) => {
     firstRankReversed: DataTypes.BOOLEAN,
     secondRankReversed: DataTypes.BOOLEAN,
     thirdRankReversed: DataTypes.BOOLEAN,
-    pickedStock: DataTypes.STRING,
+    // pickedStock: {
+    //   type: DataTypes.INTEGER,
+      // references: {
+      //   model: 'stocks',
+      //   key: 'id'
+      // }
+    // },
+    pickedStock: DataTypes.INTEGER,
     pickedStockReversed: DataTypes.BOOLEAN
   }, {});
+  // Draw.associate = function(models) {
+  //   Draw.belongsTo(models.Stock)
+  // }
   // User.associate = function(models) {
   //   User.belongsToMany(models.Stock, {through: 'UserStocks',foreignKey: 'userId', as: 'stocks'})
   //   User.hasMany(models.Draw, {as: 'draws', foreignKey: 'id'})
