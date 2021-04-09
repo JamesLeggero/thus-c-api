@@ -30,13 +30,31 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const user = await User.findByPk(req.params.id)
+        const user = await User.findByPk(req.params.id,
+            {
+                include: [
+                    { 
+                        model: Draw, 
+                        as: 'draws',
+                        attributes: ['createdAt', 'pickedStock']
+                    },
+                    {
+                        model: Stock, 
+                        as: 'stocks',
+                        attributes: ['symbol', 'name'],
+                        through: {
+                            attributes: []
+                        }
+                    }
+                ]
+            })
         res.status(200).json(user)
     } catch (error) {
         res.json({error: error.message})
     }
 })
 
+//create new user
 router.post('/', async (req, res) => {
     try {
         const user = await User.create(req.body)
