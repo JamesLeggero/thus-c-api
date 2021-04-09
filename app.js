@@ -19,6 +19,7 @@ app.use(express.json( { extended: false } ))
 app.use('/api/users', require('./server/controllers/users'))
 app.use('/api/stocks', require('./server/controllers/stocks'))
 app.use('/api/draws', require('./server/controllers/draws'))
+app.use('/api/userstocks', require('./server/controllers/userStocks')) //watch out here
 
 // db.sequelize.sync({
 //     // logging: false,

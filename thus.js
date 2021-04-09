@@ -19,8 +19,16 @@ const thus = {
         for (let i = 0; i < stocks.length; i++) {
             localStockList.push(stocks[i].symbol)
         }
-        return localStockList
+        return localStockList //array
     }
+    //note - overload the other one but you can use this for now
+    // makeLocalUserStockList: async user => {
+    //     const localUserStockList = []
+    //     const stocks = await UserStocks.findAll({
+    //         where:
+    //         //come back to this after you write userStock controller
+    //     })
+    // }
 
 }
 
