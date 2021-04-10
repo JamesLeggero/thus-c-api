@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const axios = require('axios')
+const thus = require('../../thus')
 const  { Draw } = require('../models/')
 
 
@@ -48,6 +49,9 @@ router.post('/', async (req, res) => {
 
         */
     try {
+        const { userId } = req.body
+        const tarotRadix = thus.tarotRadix()
+        res.json(tarotRadix)
 
         // const userId = req.body.id
 
