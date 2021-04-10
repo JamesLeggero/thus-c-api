@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const { user, symbol } = req.body
+    const { userId, symbol } = req.body
     const localStockList = await thus.makeLocalStockList()
     if (localStockList.includes(symbol)) {
         try {
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
         })
         // console.log(stock[0].id)
         const userStock = await UserStocks.create({
-            userId: user,
+            userId: userId,
             stockId: stock[0].id
         })
         res.json(userStock)
@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
                 }
             })
             const userStock = await UserStocks.create({
-                userId: user,
+                userId: userId,
                 stockId: stock[0].id
             })
             res.json(userStock)

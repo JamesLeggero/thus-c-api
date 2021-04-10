@@ -72,7 +72,14 @@ const thus = {
             userStockSymbolList.push(newStockSymbol.symbol)
         }
         return userStockSymbolList
-
+    },
+    makeUserStocksDmRanked: async userStockSymbolList => {
+        const userStockDmRanked = []
+        for (let i = 0; i < userStockSymbolList.length; i++) {
+            const plusDiResponse = await axios.get(`https://www.alphavantage.co/query?function=PLUS_DI&symbol=${userStockSymbolList[i]}&interval=weekly&time_period=25&apikey=${ALPHA}`)
+            userStockDmRanked.push(plusDiResponse.data)
+        }
+        return userStockDmRanked
     }
 }
 
