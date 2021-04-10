@@ -74,13 +74,17 @@ const thus = {
         }
         return userStockSymbolList
     },
-    makeUserStocksDmRanked: async userStockSymbolList => {
-        const userStockDmRanked = []
+    makeUserStocksArnOscRanked: async userStockSymbolList => {
+        
+        
+        const userStocksArnOscRanked = []
         for (let i = 0; i < userStockSymbolList.length; i++) {
-            const plusDiResponse = await axios.get(`https://www.alphavantage.co/query?function=PLUS_DI&symbol=${userStockSymbolList[i]}&interval=weekly&time_period=25&apikey=${ALPHA}`)
-            userStockDmRanked.push(plusDiResponse.data)
+            const stockSymbol = userStockSymbolList[i]
+            const arnOscResponse = await axios.get(`https://sandbox.iexapis.com/stable/stock/${stockSymbol}/indicator/aroonosc?range=ytd&lastIndicator=true&indicatorOnly=true&token=${IEX_SP}`)
+            userStocksArnOscRanked.push([stockSymbol, arnOscResponse.data.indicator[0][0]])
         }
-        return userStockDmRanked
+        
+        return userStocksArnOscRanked
     }
 }
 

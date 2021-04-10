@@ -53,12 +53,12 @@ router.post('/', async (req, res) => {
 
         const tarotRadix = thus.makeTarotRadix()
         const userStockSymbolList = await thus.makeUserStockSymbolList(userId)
-        const userStocksDmRanked = await thus.makeUserStocksDmRanked(userStockSymbolList)
+        const userStocksArnOscRanked = await thus.makeUserStocksArnOscRanked(userStockSymbolList)
 
 
         // const frontDeck = makeFrontDeck(stockId, tarotRadix)
         // const dbDeck = makeDbDeck(userId, tarotRadix)
-        res.json(userStocksDmRanked)
+        res.json(userStocksArnOscRanked)
 
         // const userId = req.body.id
 
