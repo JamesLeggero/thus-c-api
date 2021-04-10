@@ -1,10 +1,11 @@
 require('dotenv').config()
 const axios = require('axios')
 
-const { Stock } = require('./server/models')
+const { Stock, UserStocks } = require('./server/models')
 // const db = require('./server/config/config')
 // const sentiment = require('sentiment')
 const tarot = require('tarot-deck')
+
 const ALPHA = process.env.ALPHAVANTAGE_API
 
 
@@ -32,7 +33,8 @@ const thus = {
     //         //come back to this after you write userStock controller
     //     })
     // }
-    tarotRadix: () => {
+    
+    makeTarotRadix: () => {
         
         const threeBooleans = []
         const threeNumbers = []
@@ -45,16 +47,31 @@ const thus = {
             }
             threeNumbers.push(num)
         }
-
         for (let i = 0; i < 3; i++) {    
                 threeBooleans.push(Math.random() >= 0.5)
         }
-
         for (let i = 0; i < 3; i++) {
             tarotRadix.push(threeNumbers[i], threeBooleans[i])
         }
 
         return tarotRadix
+    },
+    makeUserStockSymbolList: async userId => {
+        const userStockIdList = []
+        const userStockSymbolList = []
+        const fullUserStockList = await UserStocks.findAll({
+            where: {
+                userId: userId
+            }
+        })
+        for (let i = 0; i < fullUserStockList.length; i++) {
+            userStockIdList.push(fullUserStockList[i].stockId)
+        }
+        for (let i = 0; i < userStockIdList.length; i++) {
+            const newStockSymbol = await Stock.findByPk(userStockIdList[i])
+            userStockSymbolList.push(newStockSymbol.symbol)
+        }
+        return userStockSymbolList
 
     }
 }

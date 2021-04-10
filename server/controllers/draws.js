@@ -50,8 +50,14 @@ router.post('/', async (req, res) => {
         */
     try {
         const { userId } = req.body
-        const tarotRadix = thus.tarotRadix()
-        res.json(tarotRadix)
+
+        // const tarotRadix = thus.makeTarotRadix()
+        const userStockSymbolList = await thus.makeUserStockSymbolList(userId)
+
+
+        // const frontDeck = makeFrontDeck(stockId, tarotRadix)
+        // const dbDeck = makeDbDeck(userId, tarotRadix)
+        res.json(userStockSymbolList)
 
         // const userId = req.body.id
 
