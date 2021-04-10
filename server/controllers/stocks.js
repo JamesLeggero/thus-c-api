@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const thus = require('../../thus')
-const  { User, Stock } = require('../models/')
+const  { User, Stock, Draw } = require('../models/')
 // const models = require('../models/models')
 
 router.get('/', async (req, res) => {
@@ -14,7 +14,13 @@ router.get('/', async (req, res) => {
                 through: {
                     attributes: []
                 }
-            }
+            },
+            {
+                model: Draw, 
+                as: 'draws',
+                attributes: ['id', 'userId', 'pickedStockReversed'],
+            },
+
         ]
     })
     res.json(stocks)

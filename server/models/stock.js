@@ -42,10 +42,10 @@ module.exports = (sequelize, DataTypes) => {
       as: 'users',
       foreignKey: 'stockId'
     })
-    // Stock.hasMany(models.Draw, {
-    //   as: 'draws',
-    //   foreignKey: 'pickedStock'
-    // })
+    Stock.hasMany(models.Draw, {
+      as: 'draws',
+      foreignKey: 'pickedStock'
+    })
   };
   return Stock;
 };

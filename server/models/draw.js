@@ -71,23 +71,27 @@ module.exports = (sequelize, DataTypes) => {
     firstRankReversed: DataTypes.BOOLEAN,
     secondRankReversed: DataTypes.BOOLEAN,
     thirdRankReversed: DataTypes.BOOLEAN,
-    // pickedStock: {
-    //   type: DataTypes.INTEGER,
+    pickedStock: {
+      type: DataTypes.INTEGER,
       // references: {
       //   model: 'stocks',
       //   key: 'id'
       // }
-    // },
-    pickedStock: DataTypes.INTEGER,
+    },
+    // pickedStock: DataTypes.INTEGER,
     pickedStockReversed: DataTypes.BOOLEAN
   }, {});
-  // Draw.associate = function(models) {
-  //   Draw.belongsTo(models.Stock)
-  // }
-  // User.associate = function(models) {
-  //   User.belongsToMany(models.Stock, {through: 'UserStocks',foreignKey: 'userId', as: 'stocks'})
-  //   User.hasMany(models.Draw, {as: 'draws', foreignKey: 'id'})
-  // };
+  Draw.associate = function(models) {
+    Draw.belongsTo(models.Stock, {
+      foreignKey: 'pickedStock'
+    })
+  }
+  Draw.associate = function(models) {
+    Draw.belongsTo(models.User, {
+      foreignKey: 'userId'
+    })
+  }
+  
   return Draw;
 };
 
