@@ -7,14 +7,15 @@ const { Stock, UserStocks } = require('./server/models')
 const tarot = require('tarot-deck')
 
 const ALPHA = process.env.ALPHAVANTAGE_API
+const IEX_SP = process.env.IEX_SANDBOX_PUBLIC
 
 
 
 const thus = {
     retrieveStockName: async stockSymbol => {
-        const response = await axios.get(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${stockSymbol}&apikey=${ALPHA}`)
+        const response = await axios.get(`https://sandbox.iexapis.com/stable/stock/${stockSymbol}/quote?token=${IEX_SP}`)
         const data = response.data
-        const company = data.Name
+        const company = data.companyName
         return company
     },
     makeLocalStockList: async () => {

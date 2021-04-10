@@ -5,25 +5,37 @@ const  { User, Stock, Draw } = require('../models/')
 // const models = require('../models/models')
 
 router.get('/', async (req, res) => {
-    const stocks = await Stock.findAll({
-        include: [
-            {
-                model: User, 
-                as: 'users',
-                attributes: ['id', 'email'],
-                through: {
-                    attributes: []
-                }
-            },
-            {
-                model: Draw, 
-                as: 'draws',
-                attributes: ['id', 'userId', 'pickedStockReversed'],
-            },
+    // const stocks = await Stock.findAll({
+    //     include: [
+    //         {
+    //             model: User, 
+    //             as: 'users',
+    //             attributes: ['id', 'email'],
+    //             through: {
+    //                 attributes: []
+    //             }
+    //         },
+    //         {
+    //             model: Draw, 
+    //             as: 'draws',
+    //             attributes: ['id', 'userId', 'pickedStockReversed'],
+    //         },
 
-        ]
-    })
-    res.json(stocks)
+    //     ]
+    // })
+    // res.json(stocks)
+
+    //testing the new IEX platform:
+    const { symbol } = req.body
+    try {
+        const stock = await thus.retrieveStockName(symbol)
+        res.json({
+            symbol: symbol,
+            stockName: stock
+        })
+    } catch (error) {
+        res.json({error: error.message})
+    }
 })
 
 router.get('/:id', async (req, res) => {
