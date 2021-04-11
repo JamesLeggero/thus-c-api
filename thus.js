@@ -26,6 +26,24 @@ const thus = {
         }
         return localStockList //array
     },
+    updateAroonOscs: async localStockList => {
+        const updatedAroons = []
+        for (let i = 0; i < localStockList.length; i++) {
+            const stockSymbol = localStockList[i]
+            const newAroonResponse = await axios.get(`https://sandbox.iexapis.com/stable/stock/${stockSymbol}/indicator/aroonosc?range=ytd&lastIndicator=true&indicatorOnly=true&token=${IEX_SP}`)
+            const updatedAroonOsc = newAroonResponse.data.indicator[0][0]
+            const stockToUpdate = Stock.update({aroonOsc: updatedAroonOsc}, {
+                where: {
+                    symbol: stockSymbol
+                }
+            })
+            updatedAroons.push([stockSymbol, updatedAroonOsc])
+        }
+        const updatedStockList = await Stock.findAll({
+            attributes: ['symbol', 'aroonOsc']
+        })
+        return updatedStockList
+    },
     //note - overload the other one but you can use this for now
     // makeLocalUserStockList: async user => {
     //     const localUserStockList = []

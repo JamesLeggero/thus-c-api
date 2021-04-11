@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
   const Stock = sequelize.define('Stock', {
     name: DataTypes.STRING,
     symbol: DataTypes.STRING,
+    aroonOsc: DataTypes.INTEGER
   }, {});
   Stock.associate = function(models) {
     Stock.belongsToMany(models.User, {

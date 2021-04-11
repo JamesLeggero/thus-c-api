@@ -38,6 +38,17 @@ router.get('/', async (req, res) => {
     // }
 })
 
+router.post('/updateAll', async (req, res) => {
+    try { 
+        const localStockList = await thus.makeLocalStockList()
+        const updatedAroonOscs = await thus.updateAroonOscs(localStockList)
+        res.json(updatedAroonOscs)
+    } catch (error) {
+        res.json({error: error.message})
+    }
+
+})
+
 router.get('/:id', async (req, res) => {
     const stock = await Stock.findByPk(req.params.id, 
         {
