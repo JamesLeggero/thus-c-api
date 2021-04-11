@@ -35,18 +35,20 @@ router.post('/', async (req, res) => {
     } else {
         try {
             const name = await thus.retrieveStockName(symbol)
+            const aroonOsc = await thus.getInitialAroonOsc(symbol)
             const newStock = await Stock.create({
                 name: name,
-                symbol: symbol
+                symbol: symbol,
+                aroonOsc: aroonOsc
             })
-            const stock = await Stock.findAll({
-                where: {
-                    symbol: symbol
-                }
-            })
+            // const stock = await Stock.findAll({
+            //     where: {
+            //         symbol: symbol
+            //     }
+            // })
             const userStock = await UserStocks.create({
                 userId: userId,
-                stockId: stock[0].id
+                stockId: newStock.id
             })
             res.json(userStock)
         } catch (error) {

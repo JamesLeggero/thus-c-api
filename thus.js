@@ -18,6 +18,11 @@ const thus = {
         const company = data.companyName
         return company
     },
+    getInitialAroonOsc: async symbol =>{
+        const initalAroonResponse = await axios.get(`https://sandbox.iexapis.com/stable/stock/${symbol}/indicator/aroonosc?range=ytd&lastIndicator=true&indicatorOnly=true&token=${IEX_SP}`)
+        const initialAroonOsc = initalAroonResponse.data.indicator[0][0]
+        return initialAroonOsc   
+    },
     makeLocalStockList: async () => {
         const localStockList = []
         const stocks = await Stock.findAll({})
@@ -98,9 +103,15 @@ const thus = {
         const userStocksArnOscRanked = []
         for (let i = 0; i < userStockSymbolList.length; i++) {
             const stockSymbol = userStockSymbolList[i]
-            const arnOscResponse = await axios.get(`https://sandbox.iexapis.com/stable/stock/${stockSymbol}/indicator/aroonosc?range=ytd&lastIndicator=true&indicatorOnly=true&token=${IEX_SP}`)
-            userStocksArnOscRanked.push([stockSymbol, arnOscResponse.data.indicator[0][0]])
+            const dbStock = await Stock.findOne({
+                where: {
+                    symbol: stockSymbol
+                }
+            })
+            userStocksArnOscRanked.push([stockSymbol, dbStock.aroonOsc])
         }
+
+        userStocksArnOscRanked.sort(function(a,b){return a[1]-b[1]}) //sorts second element of array
         
         return userStocksArnOscRanked
     }
