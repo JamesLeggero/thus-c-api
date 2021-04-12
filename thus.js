@@ -5,6 +5,7 @@ const { Stock, UserStocks } = require('./server/models')
 // const db = require('./server/config/config')
 const sentiment = require('sentiment')
 const tarot = require('tarot-deck')
+const SW = require('stopword')
 const Analyzer = require('natural').SentimentAnalyzer;
 const stemmer = require('natural').PorterStemmer;
 
@@ -154,9 +155,10 @@ const thus = {
             lightMeaningsSplit.push(wordsArr)
         }
         lightMeaningsSplit = lightMeaningsSplit.flat()
+        const filteredLightMeanings = SW.removeStopwords(lightMeaningsSplit)
 
         const maxAnalyzer = new Analyzer("English", stemmer, "afinn")
-        max = Math.trunc((maxAnalyzer.getSentiment(lightMeaningsSplit) * 100))
+        max = Math.trunc((maxAnalyzer.getSentiment(filteredLightMeanings) * 100))
 
         let shadowMeanings = []
         let shadowMeaningsSplit = []
@@ -170,9 +172,10 @@ const thus = {
             shadowMeaningsSplit.push(wordsArr)
         }
         shadowMeaningsSplit = shadowMeaningsSplit.flat()
+        const filteredShadowMeanings = SW.removeStopwords(shadowMeaningsSplit)
         
         const minAnalyzer = new Analyzer("English", stemmer, "afinn")
-        min = Math.trunc((minAnalyzer.getSentiment(shadowMeaningsSplit) * 100))
+        min = Math.trunc((minAnalyzer.getSentiment(filteredShadowMeanings) * 100))
 
         let finalMeanings = []
         let finalMeaningsSplit = []
@@ -190,15 +193,26 @@ const thus = {
             finalMeaningsSplit.push(wordsArr)
         }
         finalMeaningsSplit = finalMeaningsSplit.flat()
+        const filteredFinalMeanings = SW.removeStopwords(finalMeaningsSplit)
+
+        const finalAnalyzer = new Analyzer("English", stemmer, "afinn")
+        final = Math.trunc((finalAnalyzer.getSentiment(filteredFinalMeanings) * 100))
         
 
         const everything = [
-            drawnDeck[0].name,
-            drawnDeck[1].name,
-            drawnDeck[2].name,
+            drawnDeck[0].name, 
+            tarotRadix[0][1] ? 'reversed' : 'upright',
+            drawnDeck[1].name, 
+            tarotRadix[1][1] ? 'reversed' : 'upright',
+            drawnDeck[2].name, 
+            tarotRadix[2][1] ? 'reversed' : 'upright',
             max,
+            // filteredLightMeanings,
             min,
-            finalMeaningsSplit
+            // filteredShadowMeanings,
+            final,
+            filteredFinalMeanings
+            
         ]
 
 

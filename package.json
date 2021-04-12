@@ -20,6 +20,7 @@
     "sentiment": "^5.0.2",
     "sequelize": "^6.5.1",
     "sequelize-cli": "^6.2.0",
+    "stopword": "^1.0.7",
     "tarot-deck": "^2.0.1"
   }
 }
