@@ -13,15 +13,24 @@ module.exports = {
         id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          autoIncrement: true
+          autoIncrement: true,
+          primaryKey: true
         },
         userId: {
           type: Sequelize.INTEGER,
-          primaryKey: true
+          // primaryKey: true
+          references: {
+            model: "Users",
+            key: "id"
+          }
         },
         stockId: {
           type: Sequelize.INTEGER,
-          primaryKey:true
+          // primaryKey:true
+          references: {
+            model: "Stocks",
+            key: "id"
+          }
         },
         createdAt: {
           allowNull: false,
