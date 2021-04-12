@@ -3,8 +3,9 @@ const axios = require('axios')
 
 const { Stock, UserStocks } = require('./server/models')
 // const db = require('./server/config/config')
-// const sentiment = require('sentiment')
+const sentiment = require('sentiment')
 const tarot = require('tarot-deck')
+const Sentiment = require('sentiment')
 
 const ALPHA = process.env.ALPHAVANTAGE_API
 const IEX_SP = process.env.IEX_SANDBOX_PUBLIC
@@ -98,22 +99,54 @@ const thus = {
         return userStockSymbolList
     },
     makeUserStocksArnOscRanked: async userStockSymbolList => {
-        
-        
         const userStocksArnOscRanked = []
         for (let i = 0; i < userStockSymbolList.length; i++) {
+            const stockObject = {}
             const stockSymbol = userStockSymbolList[i]
             const dbStock = await Stock.findOne({
                 where: {
                     symbol: stockSymbol
                 }
             })
-            userStocksArnOscRanked.push([stockSymbol, dbStock.aroonOsc])
+            stockObject.symbol = stockSymbol
+            stockObject.aroon = dbStock.aroonOsc
+            userStocksArnOscRanked.push(stockObject)
         }
+        userStocksArnOscRanked.sort((a,b) => a.aroon - b.aroon) //sorts second element of array
 
-        userStocksArnOscRanked.sort(function(a,b){return a[1]-b[1]}) //sorts second element of array
-        
+        //determine percentage out of 100 in line
+        //there's some kludge in here because you dont actually want 50, 100, for example. you want 25 and 75
+        for (let i = 0; i < userStocksArnOscRanked.length; i++) {
+            userStocksArnOscRanked[i].percentage = Math.trunc(
+                ((i  / userStocksArnOscRanked.length) * 100)
+                + (100 / (userStocksArnOscRanked.length * 2))
+            )
+        }
         return userStocksArnOscRanked
+    },
+    drawCards: tarotRadix => {
+        const drawnDeck = []
+        for (let i = 0; i < 6; i = i + 2) {
+            const card = tarot.getByRank(tarotRadix[i])
+            const limitedCard = {}
+            limitedCard.name = card.name
+            limitedCard.meanings = card.meanings
+            drawnDeck.push(limitedCard)
+
+        }
+        return drawnDeck
+    },
+    determineTarotSentiment: (drawnDeck, tarotRadix) => {
+        let max = 0
+        let min = 0
+        let lightMeanings = []
+        for (let i = 0; i < 3; i++) {
+            lightMeanings.push(drawnDeck[i].meanings.light)
+        }
+        lightMeanings = lightMeanings.flat().join(', ')
+        const maxSentiment = new Sentiment()
+        let maxComparative = maxSentiment.analyze(lightMeanings)
+        return maxComparative
     }
 }
 
