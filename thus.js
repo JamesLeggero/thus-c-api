@@ -197,7 +197,22 @@ const thus = {
 
         const finalAnalyzer = new Analyzer("English", stemmer, "afinn")
         final = Math.trunc((finalAnalyzer.getSentiment(filteredFinalMeanings) * 100))
+
+        let maxOffset = 0
+        let minOffset = 0
+        let finalOffset = 0
+        if (min < 0) {
+            maxOffset = max + Math.abs(min)
+            finalOffset = final + Math.abs(min)
+        } else if (min > 0) {
+            maxOffset = max - Math.abs(min)
+            finalOffset = final - Math.abs(min)
+        } else {
+            maxOffset = max
+            finalOffset = final
+        }
         
+        const finalPercentage = Math.trunc((finalOffset / maxOffset) * 100)
 
         const everything = [
             drawnDeck[0].name, 
@@ -211,8 +226,11 @@ const thus = {
             min,
             // filteredShadowMeanings,
             final,
-            filteredFinalMeanings
-            
+            filteredFinalMeanings,
+            maxOffset,
+            minOffset,
+            finalOffset,
+            finalPercentage
         ]
 
 
