@@ -52,8 +52,8 @@ router.post('/', async (req, res) => {
         const { userId } = req.body
 
         const tarotRadix = thus.makeTarotRadix()
-        const userStockSymbolList = await thus.makeUserStockSymbolList(userId)
-        const userStocksArnOscRanked = await thus.makeUserStocksArnOscRanked(userStockSymbolList)
+        // const userStockSymbolList = thus.makeUserStockSymbolList(userId)
+        // const userStocksArnOscRanked = thus.makeUserStocksArnOscRanked(userStockSymbolList)
         const drawnDeck = thus.drawCards(tarotRadix)
         const tarotSentiment = thus.determineTarotSentiment(drawnDeck, tarotRadix)
 

@@ -5,7 +5,8 @@ const { Stock, UserStocks } = require('./server/models')
 // const db = require('./server/config/config')
 const sentiment = require('sentiment')
 const tarot = require('tarot-deck')
-const Sentiment = require('sentiment')
+const Analyzer = require('natural').SentimentAnalyzer;
+const stemmer = require('natural').PorterStemmer;
 
 const ALPHA = process.env.ALPHAVANTAGE_API
 const IEX_SP = process.env.IEX_SANDBOX_PUBLIC
@@ -76,7 +77,7 @@ const thus = {
                 threeBooleans.push(Math.random() >= 0.5)
         }
         for (let i = 0; i < 3; i++) {
-            tarotRadix.push(threeNumbers[i], threeBooleans[i])
+            tarotRadix.push([threeNumbers[i], threeBooleans[i]])
         }
 
         return tarotRadix
@@ -126,8 +127,8 @@ const thus = {
     },
     drawCards: tarotRadix => {
         const drawnDeck = []
-        for (let i = 0; i < 6; i = i + 2) {
-            const card = tarot.getByRank(tarotRadix[i])
+        for (let i = 0; i < 3; i++) {
+            const card = tarot.getByRank(tarotRadix[i][0])
             const limitedCard = {}
             limitedCard.name = card.name
             limitedCard.meanings = card.meanings
@@ -139,14 +140,70 @@ const thus = {
     determineTarotSentiment: (drawnDeck, tarotRadix) => {
         let max = 0
         let min = 0
+        let final = 0
+
         let lightMeanings = []
+        let lightMeaningsSplit = []
         for (let i = 0; i < 3; i++) {
             lightMeanings.push(drawnDeck[i].meanings.light)
         }
-        lightMeanings = lightMeanings.flat().join(', ')
-        const maxSentiment = new Sentiment()
-        let maxComparative = maxSentiment.analyze(lightMeanings)
-        return maxComparative
+        lightMeanings = lightMeanings.flat()
+        for (let i = 0; i < lightMeanings.length; i++) {
+            const words = lightMeanings[i]
+            const wordsArr = words.split(' ');
+            lightMeaningsSplit.push(wordsArr)
+        }
+        lightMeaningsSplit = lightMeaningsSplit.flat()
+
+        const maxAnalyzer = new Analyzer("English", stemmer, "afinn")
+        max = Math.trunc((maxAnalyzer.getSentiment(lightMeaningsSplit) * 100))
+
+        let shadowMeanings = []
+        let shadowMeaningsSplit = []
+        for (let i = 0; i < 3; i++) {
+            shadowMeanings.push(drawnDeck[i].meanings.shadow)
+        }
+        shadowMeanings = shadowMeanings.flat()
+        for (let i = 0; i < shadowMeanings.length; i++) {
+            const words = shadowMeanings[i]
+            const wordsArr = words.split(' ');
+            shadowMeaningsSplit.push(wordsArr)
+        }
+        shadowMeaningsSplit = shadowMeaningsSplit.flat()
+        
+        const minAnalyzer = new Analyzer("English", stemmer, "afinn")
+        min = Math.trunc((minAnalyzer.getSentiment(shadowMeaningsSplit) * 100))
+
+        let finalMeanings = []
+        let finalMeaningsSplit = []
+        for (let i = 0; i < 3; i++) {
+            if (tarotRadix[i][1]){
+                finalMeanings.push(drawnDeck[i].meanings.shadow)
+            } else {
+                finalMeanings.push(drawnDeck[i].meanings.light)
+            }
+        }
+        finalMeanings = finalMeanings.flat()
+        for (let i = 0; i < finalMeanings.length; i++) {
+            const words = finalMeanings[i]
+            const wordsArr = words.split(' ');
+            finalMeaningsSplit.push(wordsArr)
+        }
+        finalMeaningsSplit = finalMeaningsSplit.flat()
+        
+
+        const everything = [
+            drawnDeck[0].name,
+            drawnDeck[1].name,
+            drawnDeck[2].name,
+            max,
+            min,
+            finalMeaningsSplit
+        ]
+
+
+        return everything
+        
     }
 }
 
