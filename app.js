@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const app = express()
 const path = require ('path')
 // const db = require('./server/models')
 // const db = require('./server/config/db')
@@ -9,16 +10,11 @@ const Sequelize = require('sequelize')
 const passport = require('./server/config/passport')()
 const { sequelize } = require('./server/models')
 const thus = require('./thus')
-
-
 const { PG_URI } = process.env
-
-
 const PORT = process.env.PORT || 3001
 
 const db = new Sequelize(PG_URI)
 
-const app = express()
 app.use(cors())
 app.use(express.json( { extended: false } ))
 app.use(passport.initialize())
