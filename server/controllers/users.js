@@ -1,5 +1,9 @@
 const express = require('express')
 const router = express.Router()
+const jwt = require('jwt-simple')
+const bcrypt = require('bcrypt')
+const passport = require('../config/passport')
+const config = require('../config/config')
 const  { User, Stock, Draw, UserStocks } = require('../models/')
 
 router.get('/', async (req, res) => {
@@ -27,6 +31,50 @@ router.get('/', async (req, res) => {
         res.json({error: error.message})
     }
 })
+
+//signup
+router.post('/signup', (req, res) => {
+    console.log(req.body)
+    if (req.body.email && req.body.password) {
+        req.body.password = bcrypt.hashSync(
+            req.body.password,
+            bcrypt.genSaltSync(10)
+        )
+
+        User.findOne({email: req.body.email}, user => {
+            console.log('finding ' + user)
+            if(!user) {
+                console.log('creating ' + user)
+                User.create(req.body, (error, createdUser) => {
+                    if (error) res.status(401).json(error)
+                    if (createdUser) {
+                        let payload = {
+                            id: createdUser.id
+                        }
+                        console.log(payload)
+                        let token = jwt.encode(payload, config.jwtSecret)
+                        console.log(token)
+                        res.json({
+                            token: token,
+                            id: createdUser.id // CHECK IF ._id but maybe that's just mongo
+                        })
+        
+                    } else {
+                        console.log('failed to create user')
+                        res.status(401).json(error)
+                    }
+                })
+            } else {
+                console.log('user exists, try logging in') //note update this
+                res.status(401).json(error)
+            }
+        })
+    } else {
+        res.status(401).json(error)
+    }
+})
+
+//login
 
 router.get('/:id', async (req, res) => {
     try {
