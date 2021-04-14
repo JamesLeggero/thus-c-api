@@ -6,6 +6,8 @@ const path = require ('path')
 const schedule = require('node-schedule')
 const Sequelize = require('sequelize')
 const { sequelize } = require('./server/models')
+const thus = require('./thus')
+
 
 const { PG_URI } = process.env
 
@@ -34,17 +36,31 @@ app.use('/api/userstocks', require('./server/controllers/userStocks')) //watch o
 //       });
 //   });
 
-try {
-    sequelize.authenticate()
-    console.log('Connection to db made')
-    const job = schedule.scheduleJob('20 * * * *', function(){
-        console.log('EVERY 20!!!')
-    })
-    app.listen(PORT, () => {
+
+    try {
+        sequelize.authenticate()
+        console.log('Connection to db made')
+        const rule = new schedule.RecurrenceRule()
+        rule.minute = 52
+        
+        const job = schedule.scheduleJob(rule, async function(){
+            const stocks = await thus.makeLocalStockList()
+            const updatedAroons = await thus.updateAroonOscs(stocks)
+            const updateObject = {}
+            for (let i = 0; i < updatedAroons.length; i++) {
+                updateObject[updatedAroons[i].symbol] = updatedAroons[i].aroonOsc
+            }
+            console.log(updateObject)
+        })
+        
+        app.listen(PORT, () => {
             console.log('App listening on port ' + PORT)
         })
-    
-} catch (error) {
-    console.error('error:', error)
+        
+    } catch (error) {
+        console.error('error:', error)
+
+
+
 
 }
