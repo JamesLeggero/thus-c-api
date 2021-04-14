@@ -3,6 +3,7 @@ const express = require('express')
 const path = require ('path')
 // const db = require('./server/models')
 // const db = require('./server/config/db')
+const schedule = require('node-schedule')
 const Sequelize = require('sequelize')
 const { sequelize } = require('./server/models')
 
@@ -21,6 +22,8 @@ app.use('/api/stocks', require('./server/controllers/stocks'))
 app.use('/api/draws', require('./server/controllers/draws'))
 app.use('/api/userstocks', require('./server/controllers/userStocks')) //watch out here
 
+
+
 // db.sequelize.sync({
 //     // logging: false,
 //     force: false,
@@ -34,6 +37,9 @@ app.use('/api/userstocks', require('./server/controllers/userStocks')) //watch o
 try {
     sequelize.authenticate()
     console.log('Connection to db made')
+    const job = schedule.scheduleJob('20 * * * *', function(){
+        console.log('EVERY 20!!!')
+    })
     app.listen(PORT, () => {
             console.log('App listening on port ' + PORT)
         })

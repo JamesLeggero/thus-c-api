@@ -15,6 +15,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "natural": "^5.0.3",
+    "node-schedule": "^2.0.0",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "sentiment": "^5.0.2",
