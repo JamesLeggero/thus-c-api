@@ -83,7 +83,7 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({
         where: {
             email: req.body.email
-        }
+        },
     })
     if (!user) {
         console.log('user doesnt exist - try signing up')
@@ -174,14 +174,14 @@ router.get("/:id", async (req, res) => {
 });
 
 //create new user
-router.post("/", async (req, res) => {
-  try {
-    const user = await User.create(req.body);
-    res.json(user);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-});
+// router.post("/", async (req, res) => {
+//   try {
+//     const user = await User.create(req.body);
+//     res.json(user);
+//   } catch (error) {
+//     res.json({ error: error.message });
+//   }
+// });
 
 router.post("/:id", async (req, res) => {
   try {
