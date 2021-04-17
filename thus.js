@@ -83,48 +83,68 @@ const thus = {
 
         return tarotRadix
     },
-    makeUserStockSymbolList: async userId => {
-        const userStockIdList = []
-        const userStockSymbolList = []
-        const fullUserStockList = await UserStocks.findAll({
-            where: {
-                userId: userId
-            }
-        })
-        for (let i = 0; i < fullUserStockList.length; i++) {
-            userStockIdList.push(fullUserStockList[i].stockId)
-        }
-        for (let i = 0; i < userStockIdList.length; i++) {
-            const newStockSymbol = await Stock.findByPk(userStockIdList[i])
-            userStockSymbolList.push(newStockSymbol.symbol)
-        }
-        return userStockSymbolList
-    },
-    makeUserStocksArnOscRanked: async userStockSymbolList => {
-        const userStocksArnOscRanked = []
-        for (let i = 0; i < userStockSymbolList.length; i++) {
-            const stockObject = {}
-            const stockSymbol = userStockSymbolList[i]
-            const dbStock = await Stock.findOne({
-                where: {
-                    symbol: stockSymbol
+    // makeUserStockSymbolList: async userId => {
+    //     const userStockIdList = []
+    //     const userStockSymbolList = []
+    //     const fullUserStockList = await UserStocks.findAll({
+    //         where: {
+    //             userId: userId
+    //         }
+    //     })
+    //     for (let i = 0; i < fullUserStockList.length; i++) {
+    //         userStockIdList.push(fullUserStockList[i].stockId)
+    //     }
+    //     for (let i = 0; i < userStockIdList.length; i++) {
+    //         const newStockSymbol = await Stock.findByPk(userStockIdList[i])
+    //         userStockSymbolList.push(newStockSymbol.symbol)
+    //     }
+    //     return userStockSymbolList
+    // },
+    makeUserStockList: async userId => {
+        const userStockList = []
+        let allInfo = []
+        if (userId === 0) {
+            const allStocks = await Stock.findAll({})
+            
+            for (let i = 0; i < allStocks.length; i++) {
+                const { id, symbol, aroonOsc } = allStocks[i]
+                const stockObject = {
+                    id: id,
+                    symbol: symbol,
+                    aroonOsc: aroonOsc
                 }
-            })
-            stockObject.symbol = stockSymbol
-            stockObject.aroon = dbStock.aroonOsc
-            userStocksArnOscRanked.push(stockObject)
+                userStockList.push(stockObject)
+            }
+            return userStockList
         }
-        userStocksArnOscRanked.sort((a,b) => a.aroon - b.aroon) //sorts second element of array
+        
+        
+    },
+    makeSortedStocks: async userStockList => {
+        const sortedStocks = userStockList
+        // for (let i = 0; i < userStockList.length; i++) {
+        //     const stockObject = {}
+            // const stockSymbol = userStockSymbolList[i]
+            // const dbStock = await Stock.findOne({
+            //     where: {
+            //         symbol: stockSymbol
+            //     }
+            // })
+        //     stockObject.symbol = stockSymbol
+        //     stockObject.aroon = dbStock.aroonOsc
+        //     sortedStocks.push(stockObject)
+        // }
+        sortedStocks.sort((a,b) => a.aroonOsc - b.aroonOsc) //sorts second element of array
 
         //determine percentage out of 100 in line
         //there's some kludge in here because you dont actually want 50, 100, for example. you want 25 and 75
-        for (let i = 0; i < userStocksArnOscRanked.length; i++) {
-            userStocksArnOscRanked[i].percentage = Math.trunc(
-                ((i  / userStocksArnOscRanked.length) * 100)
-                + (100 / (userStocksArnOscRanked.length * 2))
-            )
-        }
-        return userStocksArnOscRanked
+        // for (let i = 0; i < sortedStocks.length; i++) {
+        //     sortedStocks[i].percentage = Math.trunc(
+        //         ((i  / sortedStocks.length) * 100)
+        //         + (100 / (sortedStocks.length * 2))
+        //     )
+        // }
+        return sortedStocks
     },
     drawCards: tarotRadix => {
         const drawnDeck = []
