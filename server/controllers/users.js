@@ -160,7 +160,7 @@ router.get("/:id", async (req, res) => {
         {
           model: Stock,
           as: "stocks",
-          attributes: ["symbol", "name"],
+          attributes: ["symbol", "name", "id"],
           through: {
             attributes: [],
           },
