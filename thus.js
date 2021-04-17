@@ -122,28 +122,27 @@ const thus = {
     },
     makeSortedStocks: async userStockList => {
         const sortedStocks = userStockList
-        // for (let i = 0; i < userStockList.length; i++) {
-        //     const stockObject = {}
-            // const stockSymbol = userStockSymbolList[i]
-            // const dbStock = await Stock.findOne({
-            //     where: {
-            //         symbol: stockSymbol
-            //     }
-            // })
-        //     stockObject.symbol = stockSymbol
-        //     stockObject.aroon = dbStock.aroonOsc
-        //     sortedStocks.push(stockObject)
-        // }
-        sortedStocks.sort((a,b) => a.aroonOsc - b.aroonOsc) //sorts second element of array
+        sortedStocks.sort((a,b) => a.aroonOsc - b.aroonOsc) //sorts by aroon of each object in arr
 
-        //determine percentage out of 100 in line
-        //there's some kludge in here because you dont actually want 50, 100, for example. you want 25 and 75
-        // for (let i = 0; i < sortedStocks.length; i++) {
-        //     sortedStocks[i].percentage = Math.trunc(
-        //         ((i  / sortedStocks.length) * 100)
-        //         + (100 / (sortedStocks.length * 2))
-        //     )
-        // }
+        // determine percentage out of 100 in line
+        // there's some kludge in here because you dont actually want 50, 100, for example. you want 25 and 75
+
+        //note 210417 - you could also do a min max, al la:
+        /*
+        min:0, max:19
+        min:20, max: 39,
+        min:40, max: 59;
+        min: 60, max:79,
+        min:80, max:100
+
+        we'll do this another time, maybe
+        */
+        for (let i = 0; i < sortedStocks.length; i++) {
+            sortedStocks[i].percentage = Math.trunc(
+                ((i  / sortedStocks.length) * 100)
+                + (100 / (sortedStocks.length * 2))
+            )
+        }
         return sortedStocks
     },
     drawCards: tarotRadix => {
@@ -261,7 +260,7 @@ const thus = {
         pickedStock.push(userStocksArnOscRanked.reduce((prev, curr) => {
             return Math.abs(curr.percentage - tarotSentiment) < Math.abs(prev.percentage - tarotSentiment) ? curr : prev
         }))
-        pickedStock.push(pickedStock[0].aroon < 0 ? 'reversed (true)' : 'upright (false)')
+        pickedStock.push(pickedStock[0].aroonOsc < 0 ? 'reversed (true)' : 'upright (false)')
         return pickedStock
     }
 }
