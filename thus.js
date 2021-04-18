@@ -83,23 +83,23 @@ const thus = {
 
         return tarotRadix
     },
-    // makeUserStockSymbolList: async userId => {
-    //     const userStockIdList = []
-    //     const userStockSymbolList = []
-    //     const fullUserStockList = await UserStocks.findAll({
-    //         where: {
-    //             userId: userId
-    //         }
-    //     })
-    //     for (let i = 0; i < fullUserStockList.length; i++) {
-    //         userStockIdList.push(fullUserStockList[i].stockId)
-    //     }
-    //     for (let i = 0; i < userStockIdList.length; i++) {
-    //         const newStockSymbol = await Stock.findByPk(userStockIdList[i])
-    //         userStockSymbolList.push(newStockSymbol.symbol)
-    //     }
-    //     return userStockSymbolList
-    // },
+    makeUserStockSymbolList: async userId => {
+        const userStockIdList = []
+        const userStockSymbolList = []
+        const fullUserStockList = await UserStocks.findAll({
+            where: {
+                userId: userId
+            }
+        })
+        for (let i = 0; i < fullUserStockList.length; i++) {
+            userStockIdList.push(fullUserStockList[i].stockId)
+        }
+        for (let i = 0; i < userStockIdList.length; i++) {
+            const newStockSymbol = await Stock.findByPk(userStockIdList[i])
+            userStockSymbolList.push(newStockSymbol.symbol)
+        }
+        return userStockSymbolList
+    },
     makeUserStockList: async userId => {
         const userStockList = []
         let allInfo = []
@@ -260,8 +260,8 @@ const thus = {
         pickedStock.push(userStocksArnOscRanked.reduce((prev, curr) => {
             return Math.abs(curr.percentage - tarotSentiment) < Math.abs(prev.percentage - tarotSentiment) ? curr : prev
         }))
-        pickedStock.push(pickedStock[0].aroonOsc < 0 ? 'reversed (true)' : 'upright (false)')
-        return pickedStock
+        // pickedStock.push(pickedStock[0].aroonOsc < 0 ? 'reversed (true)' : 'upright (false)')
+        return pickedStock[0]
     }
 }
 

@@ -15,44 +15,51 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { userId, symbol } = req.body
     const localStockList = await thus.makeLocalStockList()
-    if (localStockList.includes(symbol)) {
-        try {
-        const stock = await Stock.findAll({
-            where: {
-                symbol: symbol
-            }
-        })
-        // console.log(stock[0].id)
-        const userStock = await UserStocks.create({
-            userId: userId,
-            stockId: stock[0].id
-        })
-        res.json(userStock)
-
-        } catch (error) {
-            res.json({error: error.message})
-        }  
+    const userStockSymbolList = await thus.makeUserStockSymbolList(userId)
+    if (userStockSymbolList.includes(symbol)) {
+        res.json('already-present')
     } else {
-        try {
-            const name = await thus.retrieveStockName(symbol)
-            const aroonOsc = await thus.getInitialAroonOsc(symbol)
-            const newStock = await Stock.create({
-                name: name,
-                symbol: symbol,
-                aroonOsc: aroonOsc
+
+    
+        if (localStockList.includes(symbol)) {
+            try {
+            const stock = await Stock.findAll({
+                where: {
+                    symbol: symbol
+                }
             })
-            // const stock = await Stock.findAll({
-            //     where: {
-            //         symbol: symbol
-            //     }
-            // })
+            // console.log(stock[0].id)
             const userStock = await UserStocks.create({
                 userId: userId,
-                stockId: newStock.id
+                stockId: stock[0].id
             })
             res.json(userStock)
-        } catch (error) {
-            res.json({error: error.message})
+
+            } catch (error) {
+                res.json({error: error.message})
+            }  
+        } else {
+            try {
+                const name = await thus.retrieveStockName(symbol)
+                const aroonOsc = await thus.getInitialAroonOsc(symbol)
+                const newStock = await Stock.create({
+                    name: name,
+                    symbol: symbol,
+                    aroonOsc: aroonOsc
+                })
+                // const stock = await Stock.findAll({
+                //     where: {
+                //         symbol: symbol
+                //     }
+                // })
+                const userStock = await UserStocks.create({
+                    userId: userId,
+                    stockId: newStock.id
+                })
+                res.json(userStock)
+            } catch (error) {
+                res.json({error: error.message})
+            }
         }
     }
 })

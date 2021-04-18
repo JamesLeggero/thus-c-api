@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
         const pickedStock = await thus.pickStock(sortedStocks, tarotSentiment)
         
        
-        res.json(pickedStock)
+        res.json({pickedStock, tarotRadix})
 
         // const userId = req.body.id
 
