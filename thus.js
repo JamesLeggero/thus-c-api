@@ -117,6 +117,21 @@ const thus = {
             }
             return userStockList
         }
+        const userStocks = await UserStocks.findAll({
+            where: {
+                userId: userId
+            }
+        })
+        for (let i = 0; i < userStocks.length; i++) {
+            const stockToAdd = await Stock.findOne({
+                where: {
+                    id: userStocks[i].stockId
+                }
+            })
+            const {id, symbol, aroonOsc } = stockToAdd
+            userStockList.push({id, symbol, aroonOsc})
+        }
+        return userStockList
         
         
     },
