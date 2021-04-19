@@ -270,9 +270,9 @@ const thus = {
         return finalPercentage
         
     },
-    pickStock: (userStocksArnOscRanked, tarotSentiment) => {
+    pickStock: (sortedStocks, tarotSentiment) => {
         const pickedStock = []
-        pickedStock.push(userStocksArnOscRanked.reduce((prev, curr) => {
+        pickedStock.push(sortedStocks.reduce((prev, curr) => {
             return Math.abs(curr.percentage - tarotSentiment) < Math.abs(prev.percentage - tarotSentiment) ? curr : prev
         }))
         // pickedStock.push(pickedStock[0].aroonOsc < 0 ? 'reversed (true)' : 'upright (false)')

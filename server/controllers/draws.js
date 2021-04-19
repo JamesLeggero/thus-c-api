@@ -47,9 +47,21 @@ router.post('/', async (req, res) => {
         // const frontDeck = makeFrontDeck(stockId, tarotRadix)
         // const dbDeck = makeDbDeck(userId, tarotRadix)
         const pickedStock = await thus.pickStock(sortedStocks, tarotSentiment)
-        
-       
-        res.json({pickedStock, tarotRadix})
+        const sendToFront = {pickedStock, tarotRadix}
+        const sendToDb = {
+            userId: userId,
+            firstRank: tarotRadix[0][0],
+            firstRankReversed: tarotRadix[0][1],
+            secondRank: tarotRadix[1][0],
+            secondRankReversed: tarotRadix[1][1],
+            thirdRank: tarotRadix[2][0],
+            thirdRankReversed:tarotRadix[2][1],
+            pickedStock: pickedStock.id,
+            pickedStockReversed: pickedStock.aroonOsc < 0 ? true : false
+        }
+        const draw = await Draw.create(sendToDb)
+        console.log(draw)
+        res.json(sendToFront)
 
         // const userId = req.body.id
 
