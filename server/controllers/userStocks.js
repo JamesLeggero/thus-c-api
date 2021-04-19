@@ -12,6 +12,35 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:userId/:stockId', async (req, res) => {
+    try {
+        const userStock = await UserStocks.findOne({
+            where: {
+                stockId: req.params.stockId,
+                userId: req.params.userId
+            }
+        })
+        res.json(userStock)
+    } catch (error) {
+        console.log({error: error.message})
+    }
+})
+
+router.delete('/:id', async (req, res) => {
+    try {
+        // console.log(req.query.id)
+        const deletedUserStock = await UserStocks.destroy({
+            where: {
+                id: req.query.id
+            }
+        })
+        // const deletedUserStock = userStockToDelete.destroy()
+        res.status(200).json(deletedUserStock)
+    } catch (error) {
+        console.log({error: error.message})
+    }
+})
+
 router.post('/', async (req, res) => {
     const { userId, symbol } = req.body
     const localStockList = await thus.makeLocalStockList()
