@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
         {
           model: Stock,
           as: "stocks",
-          attributes: ["symbol", "name"],
+          attributes: ["id", "symbol", "name"],
           through: {
             attributes: [],
           },
@@ -33,6 +33,7 @@ router.get("/", async (req, res) => {
 
 //signup
 router.post("/signup", async (req, res) => {
+  try {
   console.log(req.body);
   if (req.body.email && req.body.password) {
     req.body.password = bcrypt.hashSync(
@@ -71,13 +72,17 @@ router.post("/signup", async (req, res) => {
     }
   } else {
       res.status(401).json(error)
-  }
+  } 
+} catch (error) {
+  console.log({error: error.message})
+}
 
   
 });
 
 //login
 router.post("/login", async (req, res) => {
+  try {
   if (req.body.email && req.body.password) {
     console.log(req.body.email);
     const user = await User.findOne({
@@ -111,6 +116,9 @@ router.post("/login", async (req, res) => {
     } else {
         res.status(401).json(error)
     }
+  } catch (error) {
+    console.log({error: error.message})
+  }
 
 
 
@@ -160,7 +168,7 @@ router.get("/:id", async (req, res) => {
         {
           model: Stock,
           as: "stocks",
-          attributes: ["symbol", "name"],
+          attributes: ["symbol", "name", "id", "aroonOsc"],
           through: {
             attributes: [],
           },

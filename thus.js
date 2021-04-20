@@ -100,31 +100,65 @@ const thus = {
         }
         return userStockSymbolList
     },
-    makeUserStocksArnOscRanked: async userStockSymbolList => {
-        const userStocksArnOscRanked = []
-        for (let i = 0; i < userStockSymbolList.length; i++) {
-            const stockObject = {}
-            const stockSymbol = userStockSymbolList[i]
-            const dbStock = await Stock.findOne({
+    makeUserStockList: async userId => {
+        const userStockList = []
+        let allInfo = []
+        if (userId === 0) {
+            const allStocks = await Stock.findAll({})
+            
+            for (let i = 0; i < allStocks.length; i++) {
+                const { id, symbol, aroonOsc } = allStocks[i]
+                const stockObject = {
+                    id: id,
+                    symbol: symbol,
+                    aroonOsc: aroonOsc
+                }
+                userStockList.push(stockObject)
+            }
+            return userStockList
+        }
+        const userStocks = await UserStocks.findAll({
+            where: {
+                userId: userId
+            }
+        })
+        for (let i = 0; i < userStocks.length; i++) {
+            const stockToAdd = await Stock.findOne({
                 where: {
-                    symbol: stockSymbol
+                    id: userStocks[i].stockId
                 }
             })
-            stockObject.symbol = stockSymbol
-            stockObject.aroon = dbStock.aroonOsc
-            userStocksArnOscRanked.push(stockObject)
+            const {id, symbol, aroonOsc } = stockToAdd
+            userStockList.push({id, symbol, aroonOsc})
         }
-        userStocksArnOscRanked.sort((a,b) => a.aroon - b.aroon) //sorts second element of array
+        return userStockList
+        
+        
+    },
+    makeSortedStocks: async userStockList => {
+        const sortedStocks = userStockList
+        sortedStocks.sort((a,b) => a.aroonOsc - b.aroonOsc) //sorts by aroon of each object in arr
 
-        //determine percentage out of 100 in line
-        //there's some kludge in here because you dont actually want 50, 100, for example. you want 25 and 75
-        for (let i = 0; i < userStocksArnOscRanked.length; i++) {
-            userStocksArnOscRanked[i].percentage = Math.trunc(
-                ((i  / userStocksArnOscRanked.length) * 100)
-                + (100 / (userStocksArnOscRanked.length * 2))
+        // determine percentage out of 100 in line
+        // there's some kludge in here because you dont actually want 50, 100, for example. you want 25 and 75
+
+        //note 210417 - you could also do a min max, al la:
+        /*
+        min:0, max:19
+        min:20, max: 39,
+        min:40, max: 59;
+        min: 60, max:79,
+        min:80, max:100
+
+        we'll do this another time, maybe
+        */
+        for (let i = 0; i < sortedStocks.length; i++) {
+            sortedStocks[i].percentage = Math.trunc(
+                ((i  / sortedStocks.length) * 100)
+                + (100 / (sortedStocks.length * 2))
             )
         }
-        return userStocksArnOscRanked
+        return sortedStocks
     },
     drawCards: tarotRadix => {
         const drawnDeck = []
@@ -236,13 +270,13 @@ const thus = {
         return finalPercentage
         
     },
-    pickStock: (userStocksArnOscRanked, tarotSentiment) => {
+    pickStock: (sortedStocks, tarotSentiment) => {
         const pickedStock = []
-        pickedStock.push(userStocksArnOscRanked.reduce((prev, curr) => {
+        pickedStock.push(sortedStocks.reduce((prev, curr) => {
             return Math.abs(curr.percentage - tarotSentiment) < Math.abs(prev.percentage - tarotSentiment) ? curr : prev
         }))
-        pickedStock.push(pickedStock[0].aroon < 0 ? 'reversed (true)' : 'upright (false)')
-        return pickedStock
+        // pickedStock.push(pickedStock[0].aroonOsc < 0 ? 'reversed (true)' : 'upright (false)')
+        return pickedStock[0]
     }
 }
 
