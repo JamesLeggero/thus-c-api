@@ -14,7 +14,9 @@ const { PG_URI } = process.env
 const PORT = process.env.PORT || 3001
 
 // const db = new Sequelize(PG_URI, {dialect: 'postgres'})
-const db = new Sequelize(DATABASE_URL, {dialect: 'postgres'})
+const db = new Sequelize(PG_URI, {dialect: 'postgres'})
+
+// const db = new Sequelize(DATABASE_URL, {dialect: 'postgres'})
 
 
 app.use(cors())
