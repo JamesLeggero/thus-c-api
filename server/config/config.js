@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const { PG_USERNAME, PG_PASSWORD } = process.env
+const { PG_USERNAME, PG_PASSWORD, JWT_KEY } = process.env
 
 module.exports = {
   "development": {
@@ -9,6 +9,10 @@ module.exports = {
     "database": "thus_c_api_dev",
     "host": "localhost",
     "dialect": "postgres"
+  }, 
+  jwtSecret: JWT_KEY,
+  jwtSession: {
+    session: false
   }
 }
 
