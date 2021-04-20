@@ -13,7 +13,7 @@ const thus = require('./thus')
 const { PG_URI } = process.env
 const PORT = process.env.PORT || 3001
 
-const db = new Sequelize(PG_URI)
+const db = new Sequelize(PG_URI, {dialect: 'postgres'})
 
 app.use(cors())
 app.use(express.json( { extended: false } ))
