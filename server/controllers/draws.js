@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
         const pickedStock = await thus.pickStock(sortedStocks, tarotSentiment)
         const sendToFront = {pickedStock, tarotRadix}
         const sendToDb = {
-            userId: userId,
+            userId: userId === 0 ? null : userId,
             firstRank: tarotRadix[0][0],
             firstRankReversed: tarotRadix[0][1],
             secondRank: tarotRadix[1][0],
